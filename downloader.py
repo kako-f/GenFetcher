@@ -91,7 +91,7 @@ class Downloader(object):
                         final_list_acc.append(os.path.splitext(os.path.basename(acc))[0])
 
                     if final_list_acc:
-                        for chunked_list in self.chunks(final_list_acc, 1000):
+                        for chunked_list in self.chunks(final_list_acc, 500):
                             self.download(type_of_file='fasta', starts_with='>', list_acc=chunked_list)
                     else:
                         print('Nothing to download. Terminating.')
@@ -110,7 +110,7 @@ class Downloader(object):
                         final_list_acc.append(os.path.splitext(os.path.basename(acc))[0])
 
                     if final_list_acc:
-                        for chunked_list in self.chunks(final_list_acc, 1000):
+                        for chunked_list in self.chunks(final_list_acc, 500):
                             self.download(type_of_file='gb', starts_with='LOCUS', list_acc=chunked_list)
                     else:
                         print('Nothing to download. Terminating.')
