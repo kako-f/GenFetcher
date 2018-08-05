@@ -19,7 +19,6 @@ class CommonFunctions(object):
         :param directory:
         :return:
         """
-        files_in_directory = []
         if directory is None:
             while True:
                 try:
@@ -40,7 +39,25 @@ class CommonFunctions(object):
                     print('Could\'nt find any usable files in the given directory or does\'nt exists.\n')
                 else:
                     break
-
+        else:
+            while True:
+                try:
+                    files_in_directory = []
+                    if os.path.exists(path=directory):
+                        for ext in file_extensions:
+                            if sys.version_info[0] > 3 and sys.version_info[1] >= 5:
+                                files_in_directory.extend(
+                                    glob.glob(os.path.normpath(os.path.join(directory, ext)), recursive=True))
+                            else:
+                                for root, dirnames, filenames in os.walk(directory):
+                                    for filename in fnmatch.filter(filenames, ext):
+                                        files_in_directory.append(os.path.normpath(os.path.join(root, filename)))
+                    else:
+                        raise TypeError()
+                except TypeError:
+                    print('Could\'nt find any usable files in the given directory or does\'nt exists.\n')
+                else:
+                    break
         return files_in_directory
 
     @staticmethod
