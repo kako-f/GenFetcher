@@ -14,7 +14,7 @@ A download module is included in the program. This allows the user to quickly do
 ## Download Module
 
 ```
-python kmeron.py -d
+python genfetcher.py -d
 ```
 This option will start the download module that is used to fetch data directly from NCBI, the genome data is obtained with the accession numbers. The usage of this module is listed below:
 
@@ -26,7 +26,3 @@ This option will start the download module that is used to fetch data directly f
 * Finally it will be asked if the user want's to download the FASTA files or Genbank files.
 
 If by any reason the download is halted, the program will check if any of the files to be downloaded are already in the specified directory and skip them.
-
-##### Within the download module
---------------------------
-TODO
