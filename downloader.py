@@ -82,7 +82,7 @@ class Downloader(object):
                 user_input = self.common_functions.check_input()
                 if user_input == '1':
                     print('Fasta files')
-                    temp_l = Cf().get_files(file_extensions='*.fasta', directory=self.save_directory)
+                    temp_l = Cf().get_files(file_extensions='.fasta', directory=self.save_directory)
                     final_files = [file + '.fasta' for file in self.list_of_accession]
 
                     print('There already ' + str(len(temp_l)) + ' downloaded files.')
@@ -104,7 +104,7 @@ class Downloader(object):
 
                 elif user_input == '2':
                     print('Genbank Files')
-                    temp_l = Cf().get_files(file_extensions='*.gb', directory=self.save_directory)
+                    temp_l = Cf().get_files(file_extensions='.gb', directory=self.save_directory)
                     final_files = [file + '.gb' for file in self.list_of_accession]
                     print('There already ' + str(len(temp_l)) + ' downloaded files.')
 
