@@ -24,7 +24,6 @@ class Downloader(object):
         """
         Entrez.email = email
         self.list_of_accession = []
-        self.final_list_acc = []
 
         self.db = database
         self.type_of_return = type_of_return
@@ -34,6 +33,12 @@ class Downloader(object):
         self.save_directory = ''
         self.common_functions = Cf()
         self.save_path = ''
+
+    @staticmethod
+    def chunks(l, n):
+        for i in range(0, len(l), n):
+            # Create an index range for l of n items:
+            yield l[i:i + n]
 
     def start(self):
         """
@@ -46,6 +51,7 @@ class Downloader(object):
         """
         commonfunc = Cf()
         files_e = []
+        final_list_acc = []
 
         print("Module for downloading genomes files from NCBI.")
         file_or_not = commonfunc.query_yes_no("Want to input the accession numbers or pass a file with them?.")
@@ -82,10 +88,11 @@ class Downloader(object):
                         files_e.append(os.path.basename(f))
                     filtered = list(set(final_files).difference(files_e))
                     for acc in filtered:
-                        self.final_list_acc.append(os.path.splitext(os.path.basename(acc))[0])
-                    if self.final_list_acc:
-                        self.search()
-                        self.download(type_of_file='fasta', starts_with='>')
+                        final_list_acc.append(os.path.splitext(os.path.basename(acc))[0])
+
+                    if final_list_acc:
+                        for chunked_list in self.chunks(final_list_acc, 1000):
+                            self.download(type_of_file='fasta', starts_with='>', list_acc=chunked_list)
                     else:
                         print('Nothing to download. Terminating.')
                         exit()
@@ -100,11 +107,11 @@ class Downloader(object):
                     filtered = list(set(final_files).difference(files_e))
 
                     for acc in filtered:
-                        self.final_list_acc.append(os.path.splitext(os.path.basename(acc))[0])
+                        final_list_acc.append(os.path.splitext(os.path.basename(acc))[0])
 
-                    if self.final_list_acc:
-                        self.search()
-                        self.download(type_of_file='gb', starts_with='LOCUS')
+                    if final_list_acc:
+                        for chunked_list in self.chunks(final_list_acc, 1000):
+                            self.download(type_of_file='gb', starts_with='LOCUS', list_acc=chunked_list)
                     else:
                         print('Nothing to download. Terminating.')
                         exit()
@@ -115,24 +122,21 @@ class Downloader(object):
             else:
                 break
 
-    def search(self):
+    def search(self, list_of_acc):
         """
         This function takes the type of file for searching and the accession codes given previously to
         search for them in the specified database of NCBI.
-
-        :param type_of_file: Whether to search for fasta or gb files.
         :return:
         """
-        search_handle = Entrez.epost(db="nuccore", id=",".join(self.final_list_acc))
+        search_handle = Entrez.epost(db="nuccore", id=",".join(list_of_acc))
         search_results = Entrez.read(search_handle)
         self.web_env = search_results["WebEnv"]
         self.query_key = search_results["QueryKey"]
-        print(search_handle)
-        print(search_results)
+
         print(self.web_env)
         print(self.query_key)
 
-    def download(self, type_of_file, starts_with):
+    def download(self, type_of_file, starts_with, list_acc):
         """
 
         This function connects to NCBI through Entrez and manage the download of the files.
@@ -142,10 +146,12 @@ class Downloader(object):
         :param starts_with: which character is the first of the file to be downloaded.
         '>' for fasta files
         'LOCUS' for gb files.
+        :param list_acc
         :return:
         """
+        self.search(list_of_acc=list_acc)
         batch_size = 10
-        count = len(self.final_list_acc)
+        count = len(list_acc)
         for start in range(0, count, batch_size):
             end = min(count, start + batch_size)
             print('Downloading record %i of %i' % (start + 1, end), 'of %i' % count)
@@ -172,9 +178,10 @@ class Downloader(object):
             self.parser(fetched_files=self.fetch_handles,
                         type_of_file=type_of_file,
                         starts_with=starts_with,
-                        file_number=start)
+                        file_number=start,
+                        list_acc=list_acc)
 
-    def parser(self, fetched_files, type_of_file, starts_with, file_number):
+    def parser(self, fetched_files, type_of_file, starts_with, file_number, list_acc):
         """
         The idea behind this function is to parse the data downloaded from NCBI. A unique file is downloaded if you
         input two or more accession codes to download, so it's necessary to write the data for each file in separated
@@ -185,6 +192,7 @@ class Downloader(object):
         :param type_of_file: what are we downloading
         :param starts_with: first character of the file
         :param file_number: what file are we currently downloading and parsing
+        :param list_acc
         :return:
         """
         extension = ''
@@ -198,8 +206,8 @@ class Downloader(object):
         for line in fetched_files:
             if line.startswith(starts_with):
                 save_path = os.path.normpath(
-                    os.path.join(self.save_directory, self.final_list_acc[file_number]))
+                    os.path.join(self.save_directory, list_acc[file_number]))
                 file = open(save_path + '.' + extension, 'w')
-                print('Saving: ' + self.final_list_acc[file_number])
+                print('Saving: ' + list_acc[file_number])
                 file_number += 1
             file.write(line)
