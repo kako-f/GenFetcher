@@ -84,6 +84,9 @@ class Downloader(object):
                     print('Fasta files')
                     temp_l = Cf().get_files(file_extensions='*.fasta', directory=self.save_directory)
                     final_files = [file + '.fasta' for file in self.list_of_accession]
+
+                    print('There already ' + str(len(temp_l)) + ' downloaded files.')
+
                     for f in temp_l:
                         files_e.append(os.path.basename(f))
                     filtered = list(set(final_files).difference(files_e))
@@ -93,7 +96,7 @@ class Downloader(object):
                     if final_list_acc:
                         print('Total of: ' + str(len(final_list_acc)) + ' accession numbers.')
                         for x, chunked_list in enumerate(self.chunks(final_list_acc, 100), start=1):
-                            print('Chunk ' + str(x) + 'of ' + str(len(chunked_list)))
+                            print('Chunk ' + str(x) + ' of ' + str(len(chunked_list)))
                             self.download(type_of_file='fasta', starts_with='>', list_acc=chunked_list)
                     else:
                         print('Nothing to download. Terminating.')
@@ -103,6 +106,7 @@ class Downloader(object):
                     print('Genbank Files')
                     temp_l = Cf().get_files(file_extensions='*.gb', directory=self.save_directory)
                     final_files = [file + '.gb' for file in self.list_of_accession]
+                    print('There already ' + str(len(temp_l)) + ' downloaded files.')
 
                     for f in temp_l:
                         files_e.append(os.path.basename(f))
