@@ -96,7 +96,7 @@ class Downloader(object):
 
                     if final_list_acc:
                         print('Total of: ' + str(len(final_list_acc)) + ' accession numbers.')
-                        for x, chunked_list in enumerate(self.chunks(final_list_acc, 1000), start=1):
+                        for x, chunked_list in enumerate(self.chunks(final_list_acc, 200), start=1):
                             print('Chunk ' + str(x) + ' of ' + str(len(chunked_list)))
                             self.download(type_of_file='fasta', starts_with='>', list_acc=chunked_list)
                     else:
@@ -120,7 +120,7 @@ class Downloader(object):
 
                     if final_list_acc:
                         print('Total of: ' + str(len(final_list_acc)) + ' accession numbers.')
-                        for x, chunked_list in enumerate(self.chunks(final_list_acc, 1000), start=1):
+                        for x, chunked_list in enumerate(self.chunks(final_list_acc, 200), start=1):
                             print('Chunk ' + str(x) + ' of ' + str(len(chunked_list)))
                             self.download(type_of_file='gb', starts_with='LOCUS', list_acc=chunked_list)
                     else:
