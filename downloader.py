@@ -96,7 +96,7 @@ class Downloader(object):
 
                     if final_list_acc:
                         print('Total of: ' + str(len(final_list_acc)) + ' accession numbers.')
-                        for x, chunked_list in enumerate(self.chunks(final_list_acc, 100), start=1):
+                        for x, chunked_list in enumerate(self.chunks(final_list_acc, 1000), start=1):
                             print('Chunk ' + str(x) + ' of ' + str(len(chunked_list)))
                             self.download(type_of_file='fasta', starts_with='>', list_acc=chunked_list)
                     else:
@@ -120,7 +120,7 @@ class Downloader(object):
 
                     if final_list_acc:
                         print('Total of: ' + str(len(final_list_acc)) + ' accession numbers.')
-                        for x, chunked_list in enumerate(self.chunks(final_list_acc, 100), start=1):
+                        for x, chunked_list in enumerate(self.chunks(final_list_acc, 1000), start=1):
                             print('Chunk ' + str(x) + ' of ' + str(len(chunked_list)))
                             self.download(type_of_file='gb', starts_with='LOCUS', list_acc=chunked_list)
                     else:
@@ -139,10 +139,16 @@ class Downloader(object):
         search for them in the specified database of NCBI.
         :return:
         """
-        search_handle = Entrez.epost(db="nuccore", id=",".join(list_of_acc))
-        search_results = Entrez.read(search_handle)
-        self.web_env = search_results["WebEnv"]
-        self.query_key = search_results["QueryKey"]
+        try:
+            search_handle = Entrez.epost(db="nuccore", id=",".join(list_of_acc))
+            search_results = Entrez.read(search_handle)
+            self.web_env = search_results["WebEnv"]
+            self.query_key = search_results["QueryKey"]
+        except RuntimeError:
+            search_handle = Entrez.epost(db="nuccore", id=",".join(list_of_acc))
+            search_results = Entrez.read(search_handle)
+            self.web_env = search_results["WebEnv"]
+            self.query_key = search_results["QueryKey"]
 
         print(self.web_env)
         print(self.query_key)
