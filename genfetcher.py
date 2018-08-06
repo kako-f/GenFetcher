@@ -1,13 +1,3 @@
-# if arguments.return_arguments().download is not None and arguments.return_arguments().download is not False:
-#     print('Using arguments: ' + str(arguments.return_arguments()))
-#
-#     print("Please enter your email for identification purpose. Necessary to download data from NCBI.")
-#     email = Cf.check_input()
-#     downloader = Dl(email=email, database='nuccore', type_of_return='text')
-#     downloader.start()
-#     exit()
-# else:
-#     pass
 import sys
 import platform
 import datetime

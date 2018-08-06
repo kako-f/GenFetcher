@@ -145,10 +145,7 @@ class Downloader(object):
             self.web_env = search_results["WebEnv"]
             self.query_key = search_results["QueryKey"]
         except RuntimeError:
-            search_handle = Entrez.epost(db="nuccore", id=",".join(list_of_acc))
-            search_results = Entrez.read(search_handle)
-            self.web_env = search_results["WebEnv"]
-            self.query_key = search_results["QueryKey"]
+            self.search(list_of_acc=list_of_acc)
 
         print(self.web_env)
         print(self.query_key)
