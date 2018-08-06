@@ -29,7 +29,7 @@ def main_module(args):
 
 if __name__ == '__main__':
     intro = '\n############################################\n' \
-            '# {p} {v}                          #\n' \
+            '# {p} {v}                            #\n' \
             '# Download genomic data from NCBI    #\n' \
             '############################################'.format(v=program_ver, p=program_name)
     system_info = '\n########################\n' \
