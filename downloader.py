@@ -139,6 +139,7 @@ class Downloader(object):
         search for them in the specified database of NCBI.
         :return:
         """
+        print(list_of_acc)
         try:
             search_handle = Entrez.epost(db="nuccore", id=",".join(list_of_acc))
             search_results = Entrez.read(search_handle)
